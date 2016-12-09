@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Retrieve vendor number and product number
+serial=`lsusb | awk '/FT232/ {print $6}'`
+
+# Load kernel module
+modprobe usbserial vendor=0x`echo $serial | cut -d: -f1` product=0x`echo $serial | cut -d: -f1`
+
+# Retrieve USB device name
+usb=`dmesg | grep 'FTDI' | grep -o 'ttyUSB\w*'`
+
+# Set executable
+sudo chmod 777 /dev/$usb
+
+# Connect to console
+cu -l /dev/$usb -s $1
