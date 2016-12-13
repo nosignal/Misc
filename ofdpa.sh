@@ -2,6 +2,22 @@
 
 debug=false
 
+function usage()
+{
+cat << _EOF_
+usage:
+ $(basename $0) -c controller -v ofdpa_version [-dkh]
+
+arguments:
+ -c     OpenFlow controller IP
+ -v     OFDPA version (EX: i12, 3.0)
+ -d     Start with debug mode
+ -k     Kill ofdpa agent
+ -h     Print Help (this message) and exit
+
+_EOF_
+}
+
 function valid_ip()
 {
     local  ip=$1
@@ -44,7 +60,7 @@ function clean_up_flow()
     echo "Done."
 }
 
-while getopts "c:v:dk" flag
+while getopts "c:v:dkh" flag
 do
     case $flag in
         c)
@@ -64,10 +80,21 @@ do
             kill_ofagent
             exit 1
             ;;
+        h)
+            usage
+            exit 1
+            ;;
         *)
+            exit 1
             ;;
     esac
 done
+
+if [ $OPTIND -eq 1 ] || [ -z $ip ] || [ -z $version ]
+then
+    usage
+    exit 1
+fi
 
 kill_ofagent
 clean_up_flow
