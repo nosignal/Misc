@@ -1,0 +1,51 @@
+#!/bin/bash
+
+debug=false
+
+function usage()
+{
+cat << _EOF_
+usage:
+ $(basename $0) -a [AUTHOR] -d [DIRECTORY]
+
+arguments:
+ -a     Git commit author
+ -d     Git directory
+ -h     Print Help (this message) and exit
+
+_EOF_
+exit
+}
+
+function parsing_log()
+{
+    cd $dir
+    git log --author=$author --pretty=tformat: --shortstat | \
+    awk '{ files += $1; add += $4; subs += $6 } END { printf "%s files changed, %s insertions(+), %s deletions(-)\n", files, add, subs }' -
+}
+
+while getopts ":a:d:h" opt;
+do
+    case $opt in
+        a)
+            author=${OPTARG}
+            ;;
+        d)
+            dir=${OPTARG}
+            ;;
+        h)
+            usage
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if [ $OPTIND -eq 1 ] || [ -z "$dir" ] || [ -z "$author" ]
+then
+    usage
+fi
+
+parsing_log
+
