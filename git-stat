@@ -6,10 +6,10 @@ function usage()
 {
 cat << _EOF_
 usage:
- $(basename $0) -a [AUTHOR] -d [DIRECTORY]
+ $(basename $0) -a [AUTHOR] -d [DIRECTORY] [-h]
 
 arguments:
- -a     Git commit author
+ -a     Git commit author/email
  -d     Git directory
  -h     Print Help (this message) and exit
 
