@@ -1,0 +1,60 @@
+#!/bin/bash
+
+debug=false
+
+user=$USER
+key_path=~/.ssh/id_ecdsa.pub
+
+function usage()
+{
+cat << _EOF_
+usage:
+ $(basename $0) -u [USER] -h [HOST IP] -p [SSH KEY PATH]
+
+arguments:
+ -u     Login User
+ -h     Host IP Address
+ -p     SSH Key File Path
+
+_EOF_
+exit
+}
+
+function add_key()
+{
+    remote=$user@$host
+    cat $key_path | ssh $remote "
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        cat >> ~/.ssh/authorized_keys
+        sort -u ~/.ssh/authorized_keys > ~/.ssh/authorized_keys.bak
+        mv ~/.ssh/authorized_keys.bak ~/.ssh/authorized_keys
+        chmod 600 ~/.ssh/authorized_keys
+    "
+    ssh -n -o PasswordAuthentication=no $remote true
+}
+
+while getopts ":u:h:p:" opt;
+do
+    case $opt in
+        u)
+            user=${OPTARG}
+            ;;
+        h)
+            host=${OPTARG}
+            ;;
+        p)
+            key_path=${OPTARG}
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if [ $OPTIND -eq 0 ] || [ -z "$user" ] || [ -z "$host" ] || [ -z "$key_path" ]
+then
+    usage
+fi
+
+add_key
