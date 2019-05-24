@@ -23,7 +23,7 @@ exit
 function add_key()
 {
     remote=$user@$host
-    cat $key_path | ssh $remote "
+    cat $key_path | ssh -o StrictHostKeyChecking=no $remote "
         mkdir -p ~/.ssh
         chmod 700 ~/.ssh
         cat >> ~/.ssh/authorized_keys
