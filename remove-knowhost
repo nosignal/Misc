@@ -1,0 +1,17 @@
+#!/bin/sh
+
+function usage()
+{
+cat << _EOF_
+usage:
+ $(basename $0) [line_number]
+_EOF_
+exit
+}
+
+if [ -z "$1" ]
+then
+    usage
+fi
+
+sed -i '' ''$1'd' /Users/nosignal/.ssh/known_hosts
