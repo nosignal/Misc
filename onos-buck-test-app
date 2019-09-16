@@ -1,0 +1,52 @@
+#!/bin/bash
+
+debug=false
+checkstyle=false
+
+function usage()
+{
+cat << _EOF_
+usage:
+ $(basename $0) [-n package_name] [-ch]
+
+arguments:
+ -n     App package name to test (EX: org.onosproject.acl.*)
+ -c     Run check style only (this option will overwrite -n)
+ -h     Print Help (this message) and exit
+
+_EOF_
+}
+
+while getopts "n:ch" flag
+do
+    case $flag in
+        n)
+            package_name=$OPTARG
+            ;;
+        c)
+            checkstyle=true
+            ;;
+        h)
+            usage
+            exit 1
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+$checkstyle && package_name="!"
+
+if [ $OPTIND -eq 1 ] || [ -z $package_name ]
+then
+    usage
+    exit 1
+fi
+
+[ ! -d "$ONOS_ROOT" ] && echo "ONOS_ROOT is not defined" >&2 && exit 1
+
+# run designated app test
+export JAVA_TOOL_OPTIONS="-Duser.language=en" && \
+$ONOS_ROOT/tools/build/onos-buck test --filter $package_name 
