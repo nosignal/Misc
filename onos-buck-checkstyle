@@ -3,6 +3,4 @@
 
 # run all checkstyle
 export JAVA_TOOL_OPTIONS="-Duser.language=en" && \
-$ONOS_ROOT/tools/build/onos-buck query '//...' | \
-awk '/checkstyle/ { print $1 }' | \
-xargs $ONOS_ROOT/tools/build/onos-buck test
+$ONOS_ROOT/tools/build/onos-buck test --filter '!'
