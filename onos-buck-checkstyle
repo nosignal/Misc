@@ -2,6 +2,7 @@
 [ ! -d "$ONOS_ROOT" ] && echo "ONOS_ROOT is not defined" >&2 && exit 1
 
 # run all checkstyle
+export JAVA_TOOL_OPTIONS="-Duser.language=en" && \
 $ONOS_ROOT/tools/build/onos-buck query '//...' | \
 awk '/checkstyle/ { print $1 }' | \
 xargs $ONOS_ROOT/tools/build/onos-buck test
