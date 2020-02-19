@@ -1,0 +1,6 @@
+#!/bin/bash
+[ ! -d "$ONOS_ROOT" ] && echo "ONOS_ROOT is not defined" >&2 && exit 1
+
+# run all checkstyle
+export JAVA_TOOL_OPTIONS="-Duser.language=en" && \
+bazel query 'tests(//...)' | xargs bazel test
